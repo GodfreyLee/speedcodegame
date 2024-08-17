@@ -276,8 +276,10 @@ export default function Home({ params }) {
       )}
       {step === "gameEnd" && (
         <div className="flex flex-col justify-center items-center mt-6">
-          <div className="text-4xl">Ranking:</div>
-          <div className="bg-[#002265] min-w-[300px] min-h-[400px] p-2 mt-12 text-white flex flex-col gap-2">
+          <div className="bg-[#002265] rounded-md shadow-xl p-8 flex flex-col gap-4 text-4xl text-white">
+            Final Ranking
+          </div>
+          <div className="bg-[#002265] min-w-[300px] min-h-[400px] p-2 mt-12 text-white flex flex-col gap-2 rounded font-bold">
             {scoreList.map((s) => (
               <div className="flex justify-between">
                 <div>{s.username}</div>

@@ -43,12 +43,9 @@ export default function Home() {
         <div className="text-white">SpeedCodeGame</div>
       </div>
       <div className="flex flex-col items-center gap-4 justify-center h-[80%] ">
-        <button
-          onClick={createRoom}
-          className=" p-3 border-2 border-red-600 w-[310px] rounded-md shadow-md bg-red-500"
-        >
-          Enter Room
-        </button>
+        <div className="bg-[#002265] rounded-md shadow-xl p-8 flex flex-col gap-4">
+          <span className="text-white font-bold">JavaScript Challenge</span>
+        </div>
 
         <div className="bg-white rounded-md shadow-xl p-8 flex flex-col gap-4">
           <input

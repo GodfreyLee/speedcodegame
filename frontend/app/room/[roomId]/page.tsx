@@ -238,9 +238,9 @@ export default function Home({ params }) {
           >
             Your answer is {isCorrect ? "correct" : "wrong"}
           </div>
-          <div className="bg-[#002265] min-w-[300px] min-h-[400px] p-2 mt-12 text-white flex flex-col gap-2">
+          <div className="bg-[#002265] min-w-[300px] min-h-[400px] p-2 mt-12 text-white flex flex-col gap-2 rounded font-bold">
             {scoreList.map((s) => (
-              <div className="flex justify-between">
+              <div className="flex justify-between m-2">
                 <div>{s.username}</div>
                 <div>{s.score}</div>
               </div>

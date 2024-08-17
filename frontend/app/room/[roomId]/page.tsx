@@ -9,6 +9,7 @@ import {
   answerQuestion,
   createPlayerScore,
   fetchRoomQuestion,
+  fetchScore,
 } from "@/actions/game";
 
 export default function Home({ params }) {
@@ -17,6 +18,7 @@ export default function Home({ params }) {
   const nowTime = Date.now();
   const timeLimit = 60;
 
+  const [gameId, setGameId] = useState(-1);
   const [inputUsername, setInputUsername] = useState<any>();
   const [username, setUsername] = useState("");
   const [question, setQuestion] = useState(
@@ -30,10 +32,10 @@ export default function Home({ params }) {
   const [step, setStep] = useState("enterName");
   const [isCorrect, setIsCorrect] = useState(false);
   const [scoreList, setScoreList] = useState([
-    { username: "Robyn", score: 982 },
-    { username: "Nancy", score: 911 },
-    { username: "Mal", score: 0 },
-    { username: "jeff", score: 0 },
+    // { username: "Robyn", score: 982 },
+    // { username: "Nancy", score: 911 },
+    // { username: "Mal", score: 0 },
+    // { username: "jeff", score: 0 },
   ]);
   const editorRef = useRef(null);
   const enterQuestionStage = () => {
@@ -53,6 +55,7 @@ export default function Home({ params }) {
       console.log("🚀 ~ fetchQ ~ game.GameQuestions:", game);
       setGameQs(game.GameQuestions);
       setAllPlayers(game.Players);
+      setGameId(game.id);
       if (questionNum < 0) setQuestionNum(0);
     };
     if (step === "question") {
@@ -69,17 +72,12 @@ export default function Home({ params }) {
         player_id: input.player_id,
         game_question_id: input.game_question_id,
       });
+      await new Promise((r) => setTimeout(r, 3000));
+      setStep("score");
     };
-    if (step === "score") {
+
+    if (step === "waitForOther") {
       let score = 0;
-      console.log(
-        "🚀 ~ useEffect ~ gameQs[questionNum]?.QuestionBank?.TestCases[0]?.expected_output:",
-        gameQs[questionNum]?.QuestionBank?.TestCases[0]?.expected_output
-      );
-      console.log(
-        "🚀 ~ useEffect ~ consoleOutput.toString():",
-        consoleOutput.toString()
-      );
       if (
         consoleOutput.toString() ===
         gameQs[questionNum]?.QuestionBank?.TestCases[0]?.expected_output
@@ -88,7 +86,6 @@ export default function Home({ params }) {
         score = 500;
         const usedTime = Date.now() - nowTime;
         score = score * (1 + (timeLimit - usedTime) / timeLimit);
-        console.log("🚀 ~ useEffect ~ usedTime:", usedTime);
       } else {
         setIsCorrect(false);
       }
@@ -100,8 +97,36 @@ export default function Home({ params }) {
       });
     }
   }, [step]);
-
+  /**[
+    {
+        "id": 1,
+        "name": "jeff",
+        "game_id": 1,
+        "joined_at": "2024-08-17T08:27:44.000Z",
+        "PlayerScores": [
+            {
+                "id": 5,
+                "player_id": 1,
+                "game_question_id": 1,
+                "score": 941
+            }
+        ]
+    }
+] */
   useEffect(() => {
+    const fetchAllScore = async () => {
+      const allScore = await fetchScore(gameId);
+      const newList = allScore.map((a) => {
+        return {
+          username: a.name,
+          score: a.PlayerScores.reduce((prev, curr, i) => {
+            return prev + curr.score;
+          }, 0),
+        };
+      });
+
+      setScoreList(newList);
+    };
     const enterNextQ = async () => {
       await new Promise((r) => setTimeout(r, 5000));
       console.log("🚀 ~ enterNextQ ~ questionNum:", questionNum);
@@ -114,6 +139,7 @@ export default function Home({ params }) {
       }
     };
     if (step === "score") {
+      fetchAllScore();
       enterNextQ();
     }
   }, [step]);
@@ -219,7 +245,7 @@ export default function Home({ params }) {
           <button
             onClick={() => {
               showValue();
-              setStep("score");
+              setStep("waitForOther");
             }}
             className="mt-4 inline-flex items-center rounded-md bg-[#26890C] px-12 py-2 text-sm font-semibold text-white hover:bg-green-500"
           >
@@ -227,7 +253,7 @@ export default function Home({ params }) {
           </button>
         </div>
       )}
-
+      {step === "waitForOther" && <div className="text-4xl">Loading</div>}
       {step === "score" && (
         <div className={cn("flex flex-col items-center")}>
           <div
@@ -249,8 +275,16 @@ export default function Home({ params }) {
         </div>
       )}
       {step === "gameEnd" && (
-        <div className="flex justify-center mt-6">
+        <div className="flex flex-col justify-center items-center mt-6">
           <div className="text-4xl">Ranking:</div>
+          <div className="bg-[#002265] min-w-[300px] min-h-[400px] p-2 mt-12 text-white flex flex-col gap-2">
+            {scoreList.map((s) => (
+              <div className="flex justify-between">
+                <div>{s.username}</div>
+                <div>{s.score}</div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

@@ -4,6 +4,7 @@ import Embed from "react-runkit";
 import { useRef, useState } from "react";
 import Editor from "@monaco-editor/react";
 import { cn } from "@/utils/tailwind";
+import Countdown from "react-countdown";
 
 export default function Home() {
   const [inputUsername, setInputUsername] = useState<any>();
@@ -73,6 +74,18 @@ export default function Home() {
       {step === "question" && (
         <div className="flex flex-col items-center">
           <div className="bg-white w-full p-2">questions: {question}</div>
+          <div>
+            <Countdown
+              renderer={({hours, minutes, seconds, completed}) => {
+                return (
+                  <span>
+                    {minutes * 60 + seconds}
+                  </span>
+                );
+              }}
+              date={Date.now() + 60000}
+            />
+          </div>
           <div className="border max-w-[500px] w-full mt-12">
             {/* <Embed
               onEvaluate={(e: any) => {

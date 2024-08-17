@@ -1,0 +1,116 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+model QuestionBank {
+  id            Int              @id @default(autoincrement())
+  question_text String
+  created_at    DateTime          @default(now())
+  time_limit    Int
+
+  GameQuestions GameQuestion[]
+  TestCases     TestCase[]
+}
+
+model GameSessions {
+  id               Int       @id @default(autoincrement())
+  game_code        String    @unique
+  game_name        String
+  description      String?
+  created_at       DateTime  @default(now())
+  status           String
+  current_question Int?              // You might want to relate this to a specific question if needed
+
+  GameQuestions    GameQuestion[]
+  Players          Player[]
+  GameLogs         GameLog[]
+}
+
+model GameQuestion {
+  id          Int @id @default(autoincrement())
+  game_id     Int
+  question_id Int
+  order       Int
+
+  GameSessions GameSessions @relation(fields: [game_id], references: [id])
+  QuestionBank QuestionBank @relation(fields: [question_id], references: [id])
+  PlayerAnswers PlayerAnswer[]
+  PlayerScores  PlayerScore[]
+
+  @@index([game_id, order], name: "GameQuestionOrderIndex")
+}
+
+model TestCase {
+  id              Int         @id @default(autoincrement())
+  question_id     Int
+  input           String
+  expected_output String
+
+  QuestionBank    QuestionBank @relation(fields: [question_id], references: [id])
+
+  @@index([question_id], name: "TestCaseQuestionIndex")
+}
+
+model Player {
+  id            Int         @id @default(autoincrement())
+  name          String
+  game_id       Int
+  joined_at     DateTime     @default(now())
+
+  GameSessions   GameSessions   @relation(fields: [game_id], references: [id])
+  PlayerAnswers PlayerAnswer[]
+  PlayerScores  PlayerScore[]
+  GameLogs      GameLog[]
+
+  @@index([game_id, joined_at], name: "PlayerGameJoinIndex")
+}
+
+model PlayerAnswer {
+  id               Int         @id @default(autoincrement())
+  player_id        Int
+  game_question_id Int
+  answer_text      String?
+  submitted_at     DateTime     @default(now())
+  is_correct       Boolean
+  status           String
+
+  Player          Player        @relation(fields: [player_id], references: [id])
+  GameQuestion    GameQuestion  @relation(fields: [game_question_id], references: [id])
+
+  @@index([player_id, game_question_id], name: "PlayerAnswerIndex")
+}
+
+model PlayerScore {
+  id               Int         @id @default(autoincrement())
+  player_id        Int
+  game_question_id Int
+  score            Int
+
+  Player          Player        @relation(fields: [player_id], references: [id])
+  GameQuestion    GameQuestion  @relation(fields: [game_question_id], references: [id])
+
+  @@index([player_id, game_question_id], name: "PlayerScoreIndex")
+}
+
+model GameLog {
+  id               Int         @id @default(autoincrement())
+  game_id          Int
+  player_id        Int?
+  action           String
+  timestamp        DateTime     @default(now())
+
+  GameSessions     GameSessions  @relation(fields: [game_id], references: [id])
+  Player           Player?      @relation(fields: [player_id], references: [id])
+
+  @@index([game_id, timestamp], name: "GameLogIndex")
+}

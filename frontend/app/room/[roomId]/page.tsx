@@ -61,11 +61,12 @@ export default function Home({ params }) {
       // setGameQs(game.GameQuestions)
       // setQuestionNum(0)
     };
-    if (step === "score") {
+    if (step === "score") { 
+      console.log("🚀 ~ useEffect ~ consoleOutput:", consoleOutput)
       answerQ({
-        player_id: allPlayers.find((v) => v.name === username).id,
+        player_id: allPlayers.find(v => v.name === username)?.id,
         game_question_id: gameQs[questionNum]?.QuestionBank?.id,
-        answer_text: consoleOutput,
+        answer_text: consoleOutput.toString(),
       });
     }
   }, [step]);

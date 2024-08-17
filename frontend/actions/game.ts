@@ -10,7 +10,11 @@ export async function fetchRoomQuestion(roomId: number) {
     include: {
       GameQuestions: {
         include: {
-          QuestionBank: true,
+          QuestionBank: {
+            include: {
+              TestCases: true
+            }
+          },
         },
       },
       Players: true,

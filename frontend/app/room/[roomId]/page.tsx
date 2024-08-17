@@ -102,7 +102,7 @@ export default function Home({ params }) {
             }}
           />
           <button
-            className="py-2 px-6 bg-[#1368CE] text-white rounded"
+            className="py-2 px-6 bg-[#002265] hover:bg-[#1368CE] text-white rounded shadow-xl"
             onClick={() => {
               enterQuestionStage();
             }}
@@ -120,7 +120,7 @@ export default function Home({ params }) {
             <Countdown
               renderer={({ hours, minutes, seconds, completed }) => {
                 return (
-                  <span className="p-3 mt-10 rounded-full bg-white">
+                  <span className="p-3 mt-10 rounded-full bg-[#002265] text-white shadow-xl">
                     {minutes * 60 + seconds}
                   </span>
                 );
@@ -160,7 +160,7 @@ export default function Home({ params }) {
                 <div className="flex-shrink-0">
                   <button
                     type="submit"
-                    className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
+                    className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500 shadow-xl"
                   >
                     Run
                   </button>
@@ -172,7 +172,7 @@ export default function Home({ params }) {
             onClick={() => {
               setStep("score");
             }}
-            className="mt-4 inline-flex items-center rounded-md bg-[#26890C] px-3 py-2 text-sm font-semibold text-white hover:bg-green-500"
+            className="mt-4 inline-flex items-center rounded-md bg-[#26890C] px-12 py-2 text-sm font-semibold text-white hover:bg-green-500"
           >
             Submit
           </button>

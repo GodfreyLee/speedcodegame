@@ -11,7 +11,9 @@
   "dependencies": {
     "@dtinsight/molecule": "^2.0.0-alpha.6",
     "@monaco-editor/react": "^4.6.0",
+    "@prisma/client": "^5.18.0",
     "clsx": "^2.1.1",
+    "dotenv": "^16.4.5",
     "monaco-editor": "^0.50.0",
     "next": "14.2.5",
     "pusher": "^5.2.0",
@@ -22,7 +24,7 @@
     "tailwind-merge": "^2.5.2"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^20.15.0",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",

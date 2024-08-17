@@ -5,11 +5,17 @@ import { useEffect, useRef, useState } from "react";
 import Editor from "@monaco-editor/react";
 import { cn } from "@/utils/tailwind";
 import Countdown from "react-countdown";
-import { answerQuestion, fetchRoomQuestion } from "@/actions/game";
+import {
+  answerQuestion,
+  createPlayerScore,
+  fetchRoomQuestion,
+} from "@/actions/game";
 
 export default function Home({ params }) {
   let { roomId } = params;
   roomId = parseInt(roomId);
+  const nowTime = Date.now();
+  const timeLimit = 60;
 
   const [inputUsername, setInputUsername] = useState<any>();
   const [username, setUsername] = useState("");
@@ -47,7 +53,7 @@ export default function Home({ params }) {
       console.log("🚀 ~ fetchQ ~ game.GameQuestions:", game);
       setGameQs(game.GameQuestions);
       setAllPlayers(game.Players);
-      setQuestionNum(0);
+      if (questionNum < 0) setQuestionNum(0);
     };
     if (step === "question") {
       fetchQ();
@@ -57,17 +63,58 @@ export default function Home({ params }) {
   // post answer to backend
   useEffect(() => {
     const answerQ = async (input) => {
-      const game = await answerQuestion(input);
-      // setGameQs(game.GameQuestions)
-      // setQuestionNum(0)
-    };
-    if (step === "score") { 
-      console.log("🚀 ~ useEffect ~ consoleOutput:", consoleOutput)
-      answerQ({
-        player_id: allPlayers.find(v => v.name === username)?.id,
-        game_question_id: gameQs[questionNum]?.QuestionBank?.id,
-        answer_text: consoleOutput.toString(),
+      // const game = await answerQuestion(input);
+      await createPlayerScore({
+        score: input.score,
+        player_id: input.player_id,
+        game_question_id: input.game_question_id,
       });
+    };
+    if (step === "score") {
+      let score = 0;
+      console.log(
+        "🚀 ~ useEffect ~ gameQs[questionNum]?.QuestionBank?.TestCases[0]?.expected_output:",
+        gameQs[questionNum]?.QuestionBank?.TestCases[0]?.expected_output
+      );
+      console.log(
+        "🚀 ~ useEffect ~ consoleOutput.toString():",
+        consoleOutput.toString()
+      );
+      if (
+        consoleOutput.toString() ===
+        gameQs[questionNum]?.QuestionBank?.TestCases[0]?.expected_output
+      ) {
+        setIsCorrect(true);
+        score = 500;
+        const usedTime = Date.now() - nowTime;
+        score = score * (1 + (timeLimit - usedTime) / timeLimit);
+        console.log("🚀 ~ useEffect ~ usedTime:", usedTime);
+      } else {
+        setIsCorrect(false);
+      }
+      answerQ({
+        player_id: allPlayers.find((v) => v.name === username)?.id,
+        game_question_id: gameQs[questionNum]?.id,
+        // answer_text: consoleOutput.toString(),
+        score,
+      });
+    }
+  }, [step]);
+
+  useEffect(() => {
+    const enterNextQ = async () => {
+      await new Promise((r) => setTimeout(r, 5000));
+      console.log("🚀 ~ enterNextQ ~ questionNum:", questionNum);
+      if (questionNum === gameQs.length - 1) {
+        console.log("game end");
+        setStep("gameEnd");
+      } else {
+        setStep("question");
+        setQuestionNum(questionNum + 1);
+      }
+    };
+    if (step === "score") {
+      enterNextQ();
     }
   }, [step]);
 
@@ -126,7 +173,7 @@ export default function Home({ params }) {
                   </span>
                 );
               }}
-              date={Date.now() + 60000}
+              date={nowTime + 60 * 1000}
             />
           </div>
           <div className="border max-w-[500px] w-full mt-12">
@@ -171,6 +218,7 @@ export default function Home({ params }) {
           </div>
           <button
             onClick={() => {
+              showValue();
               setStep("score");
             }}
             className="mt-4 inline-flex items-center rounded-md bg-[#26890C] px-12 py-2 text-sm font-semibold text-white hover:bg-green-500"
@@ -198,6 +246,11 @@ export default function Home({ params }) {
               </div>
             ))}
           </div>
+        </div>
+      )}
+      {step === "gameEnd" && (
+        <div className="flex justify-center mt-6">
+          <div className="text-4xl">Ranking:</div>
         </div>
       )}
     </div>

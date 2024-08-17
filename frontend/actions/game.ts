@@ -44,3 +44,14 @@ export async function fetchScore(input) {
     },
   });
 }
+
+export async function createPlayerScore(input) {
+  await prisma.playerScore.create({
+    data: {
+      score: input.score,
+      player_id: input.player_id,
+      game_question_id: input.game_question_id
+
+    }
+  })
+}

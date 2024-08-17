@@ -22,7 +22,7 @@ model QuestionBank {
   TestCases     TestCase[]
 }
 
-model GameSessions {
+model GameSession {
   id               Int       @id @default(autoincrement())
   game_code        String    @unique
   game_name        String
@@ -42,7 +42,7 @@ model GameQuestion {
   question_id Int
   order       Int
 
-  GameSessions GameSessions @relation(fields: [game_id], references: [id])
+  GameSession GameSession @relation(fields: [game_id], references: [id])
   QuestionBank QuestionBank @relation(fields: [question_id], references: [id])
   PlayerAnswers PlayerAnswer[]
   PlayerScores  PlayerScore[]
@@ -67,7 +67,7 @@ model Player {
   game_id       Int
   joined_at     DateTime     @default(now())
 
-  GameSessions   GameSessions   @relation(fields: [game_id], references: [id])
+  GameSession   GameSession   @relation(fields: [game_id], references: [id])
   PlayerAnswers PlayerAnswer[]
   PlayerScores  PlayerScore[]
   GameLogs      GameLog[]
@@ -109,7 +109,7 @@ model GameLog {
   action           String
   timestamp        DateTime     @default(now())
 
-  GameSessions     GameSessions  @relation(fields: [game_id], references: [id])
+  GameSession     GameSession  @relation(fields: [game_id], references: [id])
   Player           Player?      @relation(fields: [player_id], references: [id])
 
   @@index([game_id, timestamp], name: "GameLogIndex")

@@ -29,3 +29,14 @@ export async function answerQuestion(input) {
     },
   });
 }
+
+export async function fetchScore(input) {
+  return await prisma.Players.findMany({
+    where: {
+      game_id: input.game_id,
+    },
+    include: {
+      PlayerScore: true,
+    },
+  });
+}

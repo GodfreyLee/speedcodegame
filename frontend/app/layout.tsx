@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head> <script src='https://embed.runkit.com'></script></head>
+      {/* <head> <script src='https://embed.runkit.com'></script></head> */}
       <body className={inter.className}>{children}</body>
     </html>
   );

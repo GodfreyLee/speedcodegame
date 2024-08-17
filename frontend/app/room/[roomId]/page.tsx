@@ -43,14 +43,14 @@ export default function Home() {
   const codeTemplate = `function solution() {` + `\n  return 1` + `\n}`;
   return (
     <div className="bg-[url('/bg-2.png')] h-[100vh] bg-cover">
-      <div className="bg-[#002265] p-2 flex justify-between">
+      <div className="bg-[#002265] p-5 flex justify-between">
         <div className="text-white">SpeedCodeGame</div>
         {username && <div className="text-white">welcome, {username}</div>}
       </div>
       {step === "enterName" && (
         <div className="flex flex-col items-center gap-12 mt-12">
           <input
-            className="border p-2"
+            className="border p-2 rounded-md"
             placeholder="Enter your name"
             onKeyDown={(e) => {
               if (e.code === "Enter" || e.code === "NumpadEnter") {
@@ -62,7 +62,7 @@ export default function Home() {
             }}
           />
           <button
-            className="p-2 bg-[#1368CE] text-white"
+            className="p-2 bg-[#1368CE] text-white rounded-md px-10"
             onClick={() => {
               enterQuestionStage();
             }}
@@ -73,12 +73,14 @@ export default function Home() {
       )}
       {step === "question" && (
         <div className="flex flex-col items-center">
-          <div className="bg-white w-full p-2">questions: {question}</div>
-          <div>
+          <div className="bg-white w-full font-bold p-5">
+            Questions: {question}
+          </div>
+          <div className="flex mt-8">
             <Countdown
-              renderer={({hours, minutes, seconds, completed}) => {
+              renderer={({ hours, minutes, seconds, completed }) => {
                 return (
-                  <span>
+                  <span className="bg-white p-3 rounded-full ml-auto">
                     {minutes * 60 + seconds}
                   </span>
                 );
@@ -140,14 +142,14 @@ export default function Home() {
       {step === "score" && (
         <div className={cn("flex flex-col items-center")}>
           <div
-            className={cn("bg-white w-full p-2 flex justify-center", {
+            className={cn("bg-white w-full p-5 flex font-bold justify-center", {
               "text-red-500": !isCorrect,
               "text-green-500": isCorrect,
             })}
           >
             Your answer is {isCorrect ? "correct" : "wrong"}
           </div>
-          <div className="bg-[#002265] min-w-[300px] min-h-[400px] p-2 mt-12 text-white flex flex-col gap-2">
+          <div className="bg-[#002265] min-w-[300px] min-h-[400px] p-5 mt-12 text-white flex flex-col gap-2 rounded">
             {scoreList.map((s) => (
               <div className="flex justify-between">
                 <div>{s.username}</div>

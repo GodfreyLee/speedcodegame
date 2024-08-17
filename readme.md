@@ -16,13 +16,11 @@ show rank
 ```
 
 ```
-setup local db
-cd backend
+cd frontend 
 
 create .env
 DATABASE_URL="postgresql://root:root@localhost:5432/speedcodegame?schema=public"
 
-docker compose up -d
 npm i
 npx prisma migrate dev
 

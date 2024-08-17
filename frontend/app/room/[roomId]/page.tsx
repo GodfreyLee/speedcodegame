@@ -17,7 +17,7 @@ export default function Home({ params }) {
     "Print all even numbers from 0 – 10"
   );
 
-  const [allPlayers, setAllPlayers] = useState([])
+  const [allPlayers, setAllPlayers] = useState([]);
   const [gameQs, setGameQs] = useState([]);
   const [questionNum, setQuestionNum] = useState(-1);
   const [consoleOutput, setConsoleOutput] = useState("");
@@ -46,7 +46,7 @@ export default function Home({ params }) {
       const game = await fetchRoomQuestion(roomId);
       console.log("🚀 ~ fetchQ ~ game.GameQuestions:", game);
       setGameQs(game.GameQuestions);
-      setAllPlayers(game.Players)
+      setAllPlayers(game.Players);
       setQuestionNum(0);
     };
     if (step === "question") {
@@ -63,8 +63,7 @@ export default function Home({ params }) {
     };
     if (step === "score") {
       answerQ({
-
-        player_id: allPlayers.find(v => v.name === username).id,
+        player_id: allPlayers.find((v) => v.name === username).id,
         game_question_id: gameQs[questionNum]?.QuestionBank?.id,
         answer_text: consoleOutput,
       });
@@ -83,7 +82,7 @@ export default function Home({ params }) {
   const codeTemplate = `function solution() {` + `\n  return 1` + `\n}`;
   return (
     <div className="bg-[url('/bg-2.png')] h-[100vh] bg-cover">
-      <div className="bg-[#002265] p-2 flex justify-between">
+      <div className="bg-[#002265] p-5 flex justify-between">
         <div className="text-white">SpeedCodeGame</div>
         <div className="text-white">Game Room {roomId}</div>
         {username && <div className="text-white">welcome, {username}</div>}
@@ -91,7 +90,7 @@ export default function Home({ params }) {
       {step === "enterName" && (
         <div className="flex flex-col items-center gap-12 mt-12">
           <input
-            className="border p-2"
+            className="border p-2 rounded"
             placeholder="Enter your name"
             onKeyDown={(e) => {
               if (e.code === "Enter" || e.code === "NumpadEnter") {
@@ -103,7 +102,7 @@ export default function Home({ params }) {
             }}
           />
           <button
-            className="p-2 bg-[#1368CE] text-white"
+            className="py-2 px-6 bg-[#1368CE] text-white rounded"
             onClick={() => {
               enterQuestionStage();
             }}
@@ -114,13 +113,17 @@ export default function Home({ params }) {
       )}
       {step === "question" && (
         <div className="flex flex-col items-center">
-          <div className="bg-white w-full p-2">
-            questions: {gameQs[questionNum]?.QuestionBank?.question_text || ""}
+          <div className="bg-white w-full font-bold p-5">
+            Questions: {gameQs[questionNum]?.QuestionBank?.question_text || ""}
           </div>
-          <div>
+          <div className="mt-5">
             <Countdown
               renderer={({ hours, minutes, seconds, completed }) => {
-                return <span>{minutes * 60 + seconds}</span>;
+                return (
+                  <span className="p-3 mt-10 rounded-full bg-white">
+                    {minutes * 60 + seconds}
+                  </span>
+                );
               }}
               date={Date.now() + 60000}
             />
@@ -179,7 +182,7 @@ export default function Home({ params }) {
       {step === "score" && (
         <div className={cn("flex flex-col items-center")}>
           <div
-            className={cn("bg-white w-full p-2 flex justify-center", {
+            className={cn("bg-white w-full p-5 font-bold flex justify-center", {
               "text-red-500": !isCorrect,
               "text-green-500": isCorrect,
             })}

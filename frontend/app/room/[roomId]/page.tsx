@@ -16,6 +16,7 @@ export default function Home({ params }) {
   const [question, setQuestion] = useState(
     "Print all even numbers from 0 – 10"
   );
+
   const [allPlayers, setAllPlayers] = useState([])
   const [gameQs, setGameQs] = useState([]);
   const [questionNum, setQuestionNum] = useState(-1);
@@ -62,6 +63,7 @@ export default function Home({ params }) {
     };
     if (step === "score") {
       answerQ({
+
         player_id: allPlayers.find(v => v.name === username).id,
         game_question_id: gameQs[questionNum]?.QuestionBank?.id,
         answer_text: consoleOutput,

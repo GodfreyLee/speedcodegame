@@ -9,7 +9,7 @@ export default function NewQuestions() {
     <div className="flex flex-col w-full items-center mt-12">
       <textarea
         onChange={(e) => setNewQ(e.target.value)}
-        className="border w-full"
+        className="border w-full h-[300px]"
         placeholder="question_text"
       />
       <textarea

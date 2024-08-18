@@ -12,8 +12,8 @@ export async function fetchRoomQuestion(roomId: number) {
         include: {
           QuestionBank: {
             include: {
-              TestCases: true
-            }
+              TestCases: true,
+            },
           },
         },
       },
@@ -50,8 +50,25 @@ export async function createPlayerScore(input) {
     data: {
       score: input.score,
       player_id: input.player_id,
-      game_question_id: input.game_question_id
+      game_question_id: input.game_question_id,
+    },
+  });
+}
 
-    }
-  })
+export async function enterGame(input) {
+  const existing = await prisma.player.findFirst({
+    where: {
+      name: input.name,
+      game_id: input.game_id,
+    },
+  });
+  if (!existing) {
+    await prisma.player.create({
+      data: {
+        name: input.name,
+        game_id: input.game_id,
+      },
+    });
+  }
+  revalidatePath("/room/" + input.game_id);
 }

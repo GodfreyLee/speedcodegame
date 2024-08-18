@@ -13,6 +13,11 @@ import {
   fetchScore,
 } from "@/actions/game";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+
+const Chat = dynamic(() => import('../../components/Ably'), {
+  ssr: false,
+})
 
 export default function Home({ params }) {
   let { roomId } = params;
@@ -56,6 +61,13 @@ export default function Home({ params }) {
       fetchQ();
     }
   }, [step]);
+
+
+  const startGame = () => {
+    // socket.emit('startGame');
+    // setNewMessage('');
+    setStep("question");
+  };
 
   const enterG = async () => {
     if (!inputUsername) {
@@ -165,7 +177,8 @@ export default function Home({ params }) {
   }
   const codeTemplate = `function solution() {` + `\n  return 1` + `\n}`;
   return (
-    <div className="bg-[url('/bg-2.png')] h-[100vh] bg-cover">
+      <Chat>
+      <div className="bg-[url('/bg-2.png')] h-[100vh] bg-cover">
       <div className="bg-[#002265] p-5 flex justify-between">
         <div
           className="text-white cursor-pointer"
@@ -210,7 +223,7 @@ export default function Home({ params }) {
               <button
                 className="py-2 px-6 bg-[#002265] hover:bg-[#1368CE] text-white rounded shadow-xl"
                 onClick={() => {
-                  setStep('question');
+                  startGame();
                 }}
               >
                 Start Game
@@ -323,5 +336,6 @@ export default function Home({ params }) {
         </div>
       )}
     </div>
+    </Chat>
   );
 }

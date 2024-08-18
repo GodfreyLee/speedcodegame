@@ -53,6 +53,11 @@ export async function createPlayerScore(input) {
       game_question_id: input.game_question_id,
     },
   });
+  return await prisma.playerScore.findMany({
+    where: {
+      game_question_id: input.game_question_id,
+    },
+  });
 }
 
 export async function enterGame(input) {

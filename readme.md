@@ -1,5 +1,8 @@
 # Speed Code Game
 
+Programmer version of Kahoot
+
+## game mechanism 
 ```
 enter name (waiting room)
 game host start
@@ -15,6 +18,7 @@ show rank
 show rank 
 ```
 
+## local dev
 ```
 cd frontend 
 
@@ -26,3 +30,6 @@ npx prisma migrate dev
 
 create new questions by entering /create-question
 ```
+
+## todo 
+create room with random questions

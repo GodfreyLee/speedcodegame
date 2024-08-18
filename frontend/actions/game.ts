@@ -77,3 +77,48 @@ export async function enterGame(input) {
   }
   revalidatePath("/room/" + input.game_id);
 }
+
+function getRandomElements(arr, numElements) {
+  if (numElements > arr.length) {
+    throw new Error("Number of elements to select exceeds array length");
+  }
+
+  const shuffled = arr.slice().sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, numElements);
+}
+
+function makeid(length) {
+  let result = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const charactersLength = characters.length;
+  let counter = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return result;
+}
+
+export async function createRoo() {
+  const room = await prisma.gameSession.create({
+    data: {
+      game_code: makeid(5),
+      game_name: "",
+      status: "active",
+    },
+  });
+
+  const allQ = await prisma.questionBank.findMany();
+  const selectedElements = getRandomElements(allQ, 3);
+  for (const q of selectedElements) {
+    await prisma.gameQuestion.create({
+      data: {
+        order: 1,
+        game_id: room.id,
+        question_id: q.id,
+      },
+    });
+  }
+  return room.id;
+}

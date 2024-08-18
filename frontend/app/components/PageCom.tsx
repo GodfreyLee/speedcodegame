@@ -154,7 +154,7 @@ export default function PageCom({ params }) {
 ] */
   useEffect(() => {
     const fetchAllScore = async () => {
-      const allScore = await fetchScore(gameId);
+      const allScore = await fetchScore({game_id:gameId});
       const newList = allScore.map((a) => {
         return {
           username: a.name,

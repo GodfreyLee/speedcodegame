@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import Editor from "@monaco-editor/react";
 import { cn } from "@/utils/tailwind";
 import { useRouter } from "next/navigation";
+import { createRoo } from "@/actions/game";
 
 export default function Home() {
   let roomIdInput = "";
@@ -37,6 +38,11 @@ export default function Home() {
     router.push(`/room/${roomId}`);
   };
 
+  const createR = async () => {
+    const id = await createRoo();
+    router.push(`/room/${id}`);
+  };
+
   return (
     <div className="bg-[url('/bg-2.png')] h-[100vh] bg-cover">
       <div className="bg-[#002265] p-5 flex justify-between">
@@ -59,6 +65,12 @@ export default function Home() {
             className="text-white p-3 border-2 border-slate-700 rounded-md shadow-md bg-slate-700"
           >
             Enter Room
+          </button>
+          <button
+            onClick={() => createR()}
+            className="text-white p-3 border-2 border-slate-700 rounded-md shadow-md bg-slate-700"
+          >
+            create Room
           </button>
         </div>
         {/* <div className="bg-white p-2 mt-12">Room list</div> */}

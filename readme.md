@@ -33,3 +33,10 @@ create new questions by entering /create-question
 
 ## todo 
 create room with random questions
+sync the time all player enter score page
+
+
+## use of ai
+```
+chatgpt is used for snippet generation
+```

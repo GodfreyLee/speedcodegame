@@ -168,13 +168,13 @@ export default function Home({ params }) {
     <div className="bg-[url('/bg-2.png')] h-[100vh] bg-cover">
       <div className="bg-[#002265] p-5 flex justify-between">
         <div
-          className="text-white cursor-pointer"
+          className="text-white cursor-pointer font-mono"
           onClick={() => router.push("/")}
         >
           SpeedCodeGame
         </div>
-        <div className="text-white">Game Room {roomId}</div>
-        {username && <div className="text-white">welcome, {username}</div>}
+        <div className="text-white font-mono">Game Room {roomId}</div>
+        {username && <div className="text-white font-mono">{username}</div>}
       </div>
       {(step === "enterName" || step === "waitForStart") && (
         <div className="flex flex-col items-center gap-12 mt-12">
@@ -198,9 +198,9 @@ export default function Home({ params }) {
           >
             Enter Game
           </button>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-4">
             {allPlayers.map((p) => (
-              <div className="p-2 bg-white rounded-sm w-[50px] text-center">
+              <div className="m-5 text-white text-2xl w-[50px] font-mono text-center uppercase font-bold">
                 {p.name}
               </div>
             ))}
@@ -210,7 +210,7 @@ export default function Home({ params }) {
               <button
                 className="py-2 px-6 bg-[#002265] hover:bg-[#1368CE] text-white rounded shadow-xl"
                 onClick={() => {
-                  setStep('question');
+                  setStep("question");
                 }}
               >
                 Start Game
@@ -286,7 +286,15 @@ export default function Home({ params }) {
           </button>
         </div>
       )}
-      {step === "waitForOther" && <div className="text-4xl">Loading</div>}
+      {step === "waitForOther" && (
+        <div className="flex items-center justify-center h-screen">
+          <div className="flex space-x-2">
+            <div className="w-4 h-4 bg-white rounded-full animate-ping"></div>
+            <div className="w-4 h-4 bg-white rounded-full animate-ping"></div>
+            <div className="w-4 h-4 bg-white rounded-full animate-ping"></div>
+          </div>
+        </div>
+      )}
       {step === "score" && (
         <div className={cn("flex flex-col items-center")}>
           <div
@@ -312,7 +320,7 @@ export default function Home({ params }) {
           <div className="bg-[#002265] rounded-md shadow-xl p-8 flex flex-col gap-4 text-4xl text-white">
             Final Ranking
           </div>
-          <div className="bg-[#002265] min-w-[300px] min-h-[400px] p-2 mt-12 text-white flex flex-col gap-2 rounded font-bold">
+          <div className="bg-[#002265] min-w-[300px] min-h-[400px] p-4 mt-12 text-white flex flex-col gap-2 rounded font-bold">
             {scoreList.map((s) => (
               <div className="flex justify-between">
                 <div>{s.username}</div>

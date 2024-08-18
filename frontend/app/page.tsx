@@ -40,7 +40,7 @@ export default function Home() {
   return (
     <div className="bg-[url('/bg-2.png')] h-[100vh] bg-cover">
       <div className="bg-[#002265] p-5 flex justify-between">
-        <div className="text-white">SpeedCodeGame</div>
+        <div className="text-white font-mono">SpeedCodeGame</div>
       </div>
       <div className="flex flex-col items-center gap-4 justify-center h-[80%] ">
         <div className="bg-[#002265] rounded-md shadow-xl p-8 flex flex-col gap-4">

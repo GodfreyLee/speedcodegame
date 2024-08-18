@@ -8,15 +8,18 @@ import Countdown from "react-countdown";
 import {
   answerQuestion,
   createPlayerScore,
+  enterGame,
   fetchRoomQuestion,
   fetchScore,
 } from "@/actions/game";
+import { useRouter } from "next/navigation";
 
 export default function Home({ params }) {
   let { roomId } = params;
   roomId = parseInt(roomId);
   const nowTime = Date.now();
   const timeLimit = 60;
+  const router = useRouter();
 
   const [gameId, setGameId] = useState(-1);
   const [inputUsername, setInputUsername] = useState<any>();
@@ -38,30 +41,37 @@ export default function Home({ params }) {
     // { username: "jeff", score: 0 },
   ]);
   const editorRef = useRef(null);
-  const enterQuestionStage = () => {
-    if (!inputUsername) {
-      alert("please enter a name");
-      return;
-    }
-    setUsername(inputUsername);
-    setStep("question");
-  };
 
   // fetch all question after enter room
   // todo move this into waiting room
   useEffect(() => {
     const fetchQ = async () => {
       const game = await fetchRoomQuestion(roomId);
-      console.log("🚀 ~ fetchQ ~ game.GameQuestions:", game);
       setGameQs(game.GameQuestions);
       setAllPlayers(game.Players);
       setGameId(game.id);
       if (questionNum < 0) setQuestionNum(0);
     };
-    if (step === "question") {
+    if (step === "enterName") {
       fetchQ();
     }
   }, [step]);
+
+  const enterG = async () => {
+    if (!inputUsername) {
+      alert("please enter a name");
+      return;
+    }
+    const allPlayers = await enterGame({
+      name: inputUsername,
+      game_id: roomId,
+    });
+    setUsername(inputUsername);
+    // todo move to when start game
+    setStep("waitForStart");
+    const game = await fetchRoomQuestion(roomId);
+    setAllPlayers(game.Players);
+  };
 
   // post answer to backend
   useEffect(() => {
@@ -157,18 +167,23 @@ export default function Home({ params }) {
   return (
     <div className="bg-[url('/bg-2.png')] h-[100vh] bg-cover">
       <div className="bg-[#002265] p-5 flex justify-between">
-        <div className="text-white">SpeedCodeGame</div>
+        <div
+          className="text-white cursor-pointer"
+          onClick={() => router.push("/")}
+        >
+          SpeedCodeGame
+        </div>
         <div className="text-white">Game Room {roomId}</div>
         {username && <div className="text-white">welcome, {username}</div>}
       </div>
-      {step === "enterName" && (
+      {(step === "enterName" || step === "waitForStart") && (
         <div className="flex flex-col items-center gap-12 mt-12">
           <input
             className="border p-2 rounded"
             placeholder="Enter your name"
             onKeyDown={(e) => {
               if (e.code === "Enter" || e.code === "NumpadEnter") {
-                enterQuestionStage();
+                enterG();
               }
             }}
             onChange={(e) => {
@@ -178,11 +193,29 @@ export default function Home({ params }) {
           <button
             className="py-2 px-6 bg-[#002265] hover:bg-[#1368CE] text-white rounded shadow-xl"
             onClick={() => {
-              enterQuestionStage();
+              enterG();
             }}
           >
             Enter Game
           </button>
+          <div className="flex gap-4">
+            {allPlayers.map((p) => (
+              <div className="p-2 bg-white rounded-sm w-[50px] text-center">
+                {p.name}
+              </div>
+            ))}
+          </div>
+          {username &&
+            allPlayers.findIndex((p) => p.name === username) > -1 && (
+              <button
+                className="py-2 px-6 bg-[#002265] hover:bg-[#1368CE] text-white rounded shadow-xl"
+                onClick={() => {
+                  setStep('question');
+                }}
+              >
+                Start Game
+              </button>
+            )}
         </div>
       )}
       {step === "question" && (
